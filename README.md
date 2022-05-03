@@ -33,3 +33,31 @@ brew update && brew install azure-cli
 brew tap azure/functions
 brew install azure-functions-core-tools@3
 ```
+
+## Project Instructions
+In case you need to return to the project later on, it is suggested to store any commands you use so you can re-create your work.
+
+### I. Creating Azure Function App
+
+We need to set up the Azure resource group, region, storage account, and an app name before we can publish.
+
+1. Create a resource group, and use this resource group to create the following resources.
+
+2. Create a storage account (within the previously created resource group and region).
+
+3. Create an Azure Function App within the resource group, region and storage account.
+  * Note that app names need to be unique across all of Azure.
+  * Make sure it is a Linux app, with a Python runtime.
+
+4. Create a CosmosDB account for MongoDB API.
+
+5. Create a MongoDB database in CosmosDB account and two collections:
+   1. `advertisements`
+   2. `posts`
+  
+  Note that we will use `_id` field for indexing.
+  
+6. Get the cosmosDB connection string and preserve it somewhere in your local. Also, save the value of the CosmosDB's connection string in the Function App's >> Application settings variables. This step will connect the two services.
+
+
+

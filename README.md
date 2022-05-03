@@ -46,8 +46,8 @@ We need to set up the Azure resource group, region, storage account, and an app 
 2. Create a storage account (within the previously created resource group and region).
 
 3. Create an Azure Function App within the resource group, region and storage account.
-  * Note that app names need to be unique across all of Azure.
-  * Make sure it is a Linux app, with a Python runtime.
+   * Note that app names need to be unique across all of Azure.
+   * Make sure it is a Linux app, with a Python runtime.
 
 4. Create a CosmosDB account for MongoDB API.
 
@@ -55,9 +55,11 @@ We need to set up the Azure resource group, region, storage account, and an app 
    1. `advertisements`
    2. `posts`
   
-  Note that we will use `_id` field for indexing.
+   Note that we will use `_id` field for indexing.
   
 6. Get the cosmosDB connection string and preserve it somewhere in your local. Also, save the value of the CosmosDB's connection string in the Function App's >> Application settings variables. This step will connect the two services.
+
+7. Import Sample Data into MongoDB collection.
 
 
 

@@ -60,6 +60,91 @@ We need to set up the Azure resource group, region, storage account, and an app 
 6. Get the cosmosDB connection string and preserve it somewhere in your local. Also, save the value of the CosmosDB's connection string in the Function App's >> Application settings variables. This step will connect the two services.
 
 7. Import Sample Data into MongoDB collection.
+    * Install [MongoDB Community Edition](https://docs.mongodb.com/manual/administration/install-community/) CLI tool in your local. For example, MacOS users may use:
+      
+      ```bash
+      # get the mongodb library
+      brew tap mongodb/brew
+      brew install mongodb-community@5.0
+      # check if mongoimport lib exists
+      mongoimport --version
+      ```
+      
+    * Import the data from the `/sample_data/` directory for Ads and Posts to initially populate your database. Note that both JSON files - `sampleAds.json` and `samplePosts.json` have multiple documents contained in a single JSON file. Each document has its own `_id` field as an identifier.
+    
+      ```bash
+      # Import data into `advertisements` collection
+      mongoimport --uri $connectionString --db $databaseName --collection 'advertisements' --file='/sample_data/sampleAds.json' --jsonArray
+      # Repeat for the `posts` collection
+      ```
+      
+8. **Update your Functions** 
+  
+    Hook up your connection string into the NeighborlyAPI server folder. You will need to replace the `url` variable with your own connection string you copy-and-pasted in the last step, along with some additional information.
+    
+    * Tip: Check [out this post](https://docs.microsoft.com/azure/cosmos-db/connect-mongodb-account?WT.mc_id=udacity_learn-wwl) if you need help with what information is needed.
+    * Go to each of the `__init__.py` files in getPosts, getPost, getAdvertisements, getAdvertisement, deleteAdvertisement, updateAdvertisement, createAdvertisements and replace your connection string. You will also need to set the related `database` and `collection` appropriately. See an example below:
+        
+        ```python
+        # inside getAdvertisements/__init__.py
+
+        def main(req: func.HttpRequest) -> func.HttpResponse:
+            logging.info('Python getAdvertisements trigger function processed a request.')
+
+            try:
+                # copy/paste your primary connection url here
+                #-------------------------------------------
+                url = "Your connection string" 
+                #--------------------------------------------
+
+                client=pymongo.MongoClient(url)
+
+                database = client['Your MongoDB database name'] # Feed the correct key for the database name to the client
+                collection = database['Collection name'] # Feed the correct key for the collection name to the database
+
+                ... [other code omitted]
+        ```
+        
+        Make sure to do the same step for the other 6 HTTP Trigger functions.
+
+9. **Deploy your Functions**
+  
+    1. Test it out locally first. You may have to create a local environment and install all `requirements.txt` dependencies before you run the functions:
+
+        ```bash
+        # cd into NeighborlyAPI
+        cd NeighborlyAPI
+
+        # install dependencies
+        pipenv install
+
+        # go into the shell
+        pipenv shell
+
+        # test func locally
+        func start
+        ```
+    
+        You may need to change `"IsEncrypted"` to `false` in `local.settings.json` if this fails.
+
+        At this point, Azure functions are hosted in `localhost:7071`. You can use the browser or Postman to see if the `GET` request works. For example, go to the browser and type in:
+
+        ```bash
+        # example endpoint for all advertisements
+        http://localhost:7071/api/getadvertisements
+
+        #example endpoint for all posts
+        http://localhost:7071/api/getposts
+        ```
+
+
+        
+
+
+
+
+
+
 
 
 

@@ -37,6 +37,12 @@ brew install azure-functions-core-tools@3
 ## Project Instructions
 In case you need to return to the project later on, it is suggested to store any commands you use so you can re-create your work.
 
+I have written all commands to create Azure resources (as described in the next section) into a bash file that you can run from the root of the project as follows:
+
+```bash
+source azure_resources.sh
+```
+
 ### I. Creating Azure Function App
 
 We need to set up the Azure resource group, region, storage account, and an app name before we can publish.

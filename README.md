@@ -76,13 +76,14 @@ We need to set up the Azure resource group, region, storage account, and an app 
       mongoimport --version
       ```
       
-    * Import the data from the `/sample_data/` directory for Ads and Posts to initially populate your database. Note that both JSON files - `sampleAds.json` and `samplePosts.json` have multiple documents contained in a single JSON file. Each document has its own `_id` field as an identifier.
+    * Import the data from the `./sample_data/` directory for Ads and Posts to initially populate your database. Note that both JSON files - `sampleAds.json` and `samplePosts.json` have multiple documents contained in a single JSON file. Each document has its own `_id` field as an identifier.
     
       ```bash
       # Import data into `advertisements` collection
-      mongoimport --uri $connectionString --db $databaseName --collection 'advertisements' --file='/sample_data/sampleAds.json' --jsonArray
-      # Repeat for the `posts` collection
+      mongoimport --uri $cosmosdbConnectionString --db $mongoDBDatabaseName --collection $adsCollectionName --file='./sample_data/sampleAds.json' --jsonArray
       ```
+      
+      Repeat the same command for the `posts` collection.
       
 8. **Update your Functions** 
   

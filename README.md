@@ -143,9 +143,128 @@ We need to set up the Azure resource group, region, storage account, and an app 
         #example endpoint for all posts
         http://localhost:7071/api/getposts
         ```
-
-
+    
+    2. Now you can deploy functions to Azure by publishing your function app.
         
+        ```bash
+        # cd into NeighborlyAPI
+        cd NeighborlyAPI
+
+        # install dependencies
+        pipenv install
+
+        # go into the shell
+        pipenv shell
+
+        # deploy Azure Functions
+        func azure functionapp publish functionapp1379128
+        ```
+       
+       The result may give you a live url in this format, or you can check in Azure portal for these as well:
+       
+       Expected output if deployed successfully:
+       
+       ```bash
+       Functions in <APP_NAME>:
+          createAdvertisement - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/createadvertisement
+
+          deleteAdvertisement - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/deleteadvertisement
+
+          getAdvertisement - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/getadvertisement
+
+          getAdvertisements - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/getadvertisements
+
+          getPost - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/getpost
+
+          getPosts - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/getposts
+
+          updateAdvertisement - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/updateadvertisement
+       ```
+       
+       > **Note**: It may take a minute or two for the endpoints to get up and running if you visit the URLs.
+       
+       Save the function app url `https://<APP_NAME>.azurewebsites.net/api/` since you will need to update that in the client-side of the application.
+
+
+### II. Deploying the client-side Flask web application
+
+1. First we are going to update the Client-side `settings.py` with local API endpoints to test the front end with local functions. Navigate to the `settings.py` file in the `NeighborlyFrontEnd/` directory and uncomment the local `API_URL` variable:
+
+    ```bash
+    # Inside file settings.py
+
+    # for production
+    # API_URL = "https://<APP_NAME>.azurewebsites.net/api"
+
+
+    # for local host if Azure functions served locally
+    API_URL = "http://localhost:7071/api"
+    ```
+
+    Test the local functions through the locally deployed webapp by running:
+
+    ```bash
+    # cd into NeighborlyFrontEnd
+    cd NeighborlyFrontEnd
+
+    # install dependencies
+    pipenv install
+
+    # go into the shell
+    pipenv shell
+
+    # test the webapp locally
+    python app.py   
+    ```
+
+2. We are going to update the Client-side `settings.py` with published API endpoints. Navigate to the settings.py file in the NeighborlyFrontEnd/ directory and specify the `API_URL` from Azure function app:
+    
+    ```bash
+    # Inside file settings.py
+
+    # for production
+    API_URL = "https://functionapp1379128.azurewebsites.net/api"
+
+
+    # for local host if Azure functions served locally
+    # API_URL = "http://localhost:7071/api"
+    ```
+    
+    Deploy your client-side application to the Azure Web App service. Name your web app different than the function app deployed in the previous step, or else you will erase your API.
+    
+    ```bash
+    # if your virtual environment is deactivate, go again into the shell
+    pipenv shell
+
+    # export variable so the Azure stack knows which entry point to start your Flask app.
+    export FLASK_RUN=app.py
+
+    # deploy the webapp 
+    az webapp up \
+        --resource-group resourcegroup1379128 \
+        --name neighborlywebapp \
+        --sku F1 \
+        --verbose
+    ```
+
+### III. CI/CD Deployment
+Create an Azure Registry and dockerize your Azure Functions. Then, push the container to the Azure Container Registry.
+
+Create a Kubernetes cluster, and verify your connection to it with `kubectl get nodes`.
+
+Deploy app to Kubernetes, and check your deployment with `kubectl config get-contexts`.
+
+
+
+
+
 
 
 

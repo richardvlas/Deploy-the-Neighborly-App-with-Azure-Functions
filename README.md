@@ -236,6 +236,26 @@ We need to set up the Azure resource group, region, storage account, and an app 
     # for local host if Azure functions served locally
     # API_URL = "http://localhost:7071/api"
     ```
+    
+    Deploy your client-side application to the Azure Web App service. Name your web app different than the function app deployed in the previous step, or else you will erase your API.
+    
+    ```bash
+    # if your virtual environment is deactivate, go again into the shell
+    pipenv shell
+
+    # export variable so the Azure stack knows which entry point to start your Flask app.
+    export FLASK_RUN=app.py
+
+    # deploy the webapp 
+    az webapp up \
+        --resource-group resourcegroup1379128 \
+        --name neighborlywebapp \
+        --sku F1 \
+        --verbose
+    ```
+
+    
+    
 
 
 

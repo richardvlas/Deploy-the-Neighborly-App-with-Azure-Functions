@@ -62,5 +62,5 @@ az cosmosdb mongodb collection create \
 
 # Import the data from json files in the ./sample_data/ directory for Ads and Posts to initially populate your database
 cosmosdbConnectionString=$(az cosmosdb keys list --name $cosmosDBDatabaseAccount --resource-group $resourceGroup --type connection-strings --query 'connectionStrings[0].connectionString' --output tsv)
-mongoimport --uri $cosmosdbConnectionString --db $mongoDBDatabaseName --collection $adsCollectionName --file='./sample_data/sampleAds.json' --jsonArray
-mongoimport --uri $cosmosdbConnectionString --db $mongoDBDatabaseName --collection $postsCollectionName --file='./sample_data/samplePosts.json' --jsonArray
+mongoimport --uri $cosmosdbConnectionString --db $mongoDBDatabaseName --collection $adsCollectionName --file='./sample_data/sampleAds.json' --jsonArray --writeConcern="{w:0}"
+mongoimport --uri $cosmosdbConnectionString --db $mongoDBDatabaseName --collection $postsCollectionName --file='./sample_data/samplePosts.json' --jsonArray --writeConcern="{w:0}"

@@ -157,7 +157,7 @@ We need to set up the Azure resource group, region, storage account, and an app 
         pipenv shell
 
         # deploy Azure Functions
-        func azure functionapp publish funcapp1379128
+        func azure functionapp publish functionapp1379128
         ```
        
        The result may give you a live url in this format, or you can check in Azure portal for these as well:
@@ -193,7 +193,50 @@ We need to set up the Azure resource group, region, storage account, and an app 
        Save the function app url `https://<APP_NAME>.azurewebsites.net/api/` since you will need to update that in the client-side of the application.
 
 
-        
+### II. Deploying the client-side Flask web application
+
+1. First we are going to update the Client-side `settings.py` with local API endpoints to test the front end with local functions. Navigate to the `settings.py` file in the `NeighborlyFrontEnd/` directory and uncomment the local `API_URL` variable:
+
+    ```bash
+    # Inside file settings.py
+
+    # for production
+    # API_URL = "https://<APP_NAME>.azurewebsites.net/api"
+
+
+    # for local host if Azure functions served locally
+    API_URL = "http://localhost:7071/api"
+    ```
+
+    Test the local functions through the locally deployed webapp by running:
+
+    ```bash
+    # cd into NeighborlyFrontEnd
+    cd NeighborlyFrontEnd
+
+    # install dependencies
+    pipenv install
+
+    # go into the shell
+    pipenv shell
+
+    # test the webapp locally
+    python app.py   
+    ```
+
+2. We are going to update the Client-side `settings.py` with published API endpoints. Navigate to the settings.py file in the NeighborlyFrontEnd/ directory and specify the `API_URL` from Azure function app:
+    
+    ```bash
+    # Inside file settings.py
+
+    # for production
+    API_URL = "https://functionapp1379128.azurewebsites.net/api"
+
+
+    # for local host if Azure functions served locally
+    # API_URL = "http://localhost:7071/api"
+    ```
+
 
 
 

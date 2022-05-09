@@ -254,8 +254,16 @@ We need to set up the Azure resource group, region, storage account, and an app 
         --verbose
     ```
 
-    
-    
+### III. CI/CD Deployment
+Create an Azure Registry and dockerize your Azure Functions. Then, push the container to the Azure Container Registry.
+
+Create a Kubernetes cluster, and verify your connection to it with `kubectl get nodes`.
+
+Deploy app to Kubernetes, and check your deployment with `kubectl config get-contexts`.
+
+
+
+
 
 
 

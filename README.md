@@ -143,6 +143,54 @@ We need to set up the Azure resource group, region, storage account, and an app 
         #example endpoint for all posts
         http://localhost:7071/api/getposts
         ```
+    
+    2. Now you can deploy functions to Azure by publishing your function app.
+        
+        ```bash
+        # cd into NeighborlyAPI
+        cd NeighborlyAPI
+
+        # install dependencies
+        pipenv install
+
+        # go into the shell
+        pipenv shell
+
+        # deploy Azure Functions
+        func azure functionapp publish funcapp1379128
+        ```
+       
+       The result may give you a live url in this format, or you can check in Azure portal for these as well:
+       
+       Expected output if deployed successfully:
+       
+       ```bash
+       Functions in <APP_NAME>:
+          createAdvertisement - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/createadvertisement
+
+          deleteAdvertisement - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/deleteadvertisement
+
+          getAdvertisement - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/getadvertisement
+
+          getAdvertisements - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/getadvertisements
+
+          getPost - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/getpost
+
+          getPosts - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/getposts
+
+          updateAdvertisement - [httpTrigger]
+              Invoke url: https://<APP_NAME>.azurewebsites.net/api/updateadvertisement
+       ```
+       
+       > **Note**: It may take a minute or two for the endpoints to get up and running if you visit the URLs.
+       
+       Save the function app url `https://<APP_NAME>.azurewebsites.net/api/` since you will need to update that in the client-side of the application.
 
 
         

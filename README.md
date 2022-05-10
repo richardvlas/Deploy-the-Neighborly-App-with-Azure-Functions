@@ -259,12 +259,55 @@ We need to set up the Azure resource group, region, storage account, and an app 
     ```
 
 ### III. CI/CD Deployment
+
+>>>>>>>>>>>>>>>
 Create an Azure Registry and dockerize your Azure Functions. Then, push the container to the Azure Container Registry.
 
 Create a Kubernetes cluster, and verify your connection to it with `kubectl get nodes`.
 
 Deploy app to Kubernetes, and check your deployment with `kubectl config get-contexts`.
+>>>>>>>>>>>>>>>  
 
+1. **Create a Dockerfile**
+    
+    A [Dockerfile](https://docs.docker.com/engine/reference/builder/) is a text document that contains all the commands a user could call on the command line to assemble an image. Executing the following command will create a Dockerfile to an existing function project:
+    
+    ```bash
+    func init --docker-only --python
+    ```
+    
+    Ensure that the auto-generated Dcokerfile contains the `pip install -r requirements.txt` command.
+
+2. **Build the image using the Dockerfile**
+    This step is also called Containerising the App. It needs Docker installed on your local machine. Using the command, you will build and tag an image:
+    
+    ```bash
+    imageName=???
+    imageTag=???
+    
+    # SYNTAX 
+    # docker build -t <name:tag> <path>
+    docker build -t $imageName:$imageTag .
+    
+    # List all images
+    docker images
+    ```
+    
+    where,
+      * `<name:tag>` is a name and optionally a tag in the 'name:tag' format and
+      * `<path>` refers to the directory containing the Dockerfile.
+
+    Once your image is ready on your local machine, you can test the application.
+    
+    ```bash
+    docker run -p 7071:7071 -it $imageName:$imageTag
+    ```
+    
+    `-p` maps the host's 7071 port to the container's 7071 port.
+    
+3. **Create Azure Container Registry Respository and Push the Image**
+    
+    After testing, you will want to push the image to a remote repository, such as Dockerhub or Azure Container Registry, so that other services (Azure Kubernetes service) can download your image and run containers out of it.
 
 
 

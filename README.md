@@ -144,7 +144,7 @@ We need to set up the Azure resource group, region, storage account, and an app 
         http://localhost:7071/api/getposts
         ```
     
-    2. Now you can deploy functions to Azure by publishing your function app.
+    2. Now you can deploy functions to Azure by publishing your function app. The command for deploying your function to Function App using CLI is:
         
         ```bash
         # cd into NeighborlyAPI
@@ -159,6 +159,10 @@ We need to set up the Azure resource group, region, storage account, and an app 
         # deploy Azure Functions
         func azure functionapp publish functionapp1379128
         ```
+        
+        If Azure cannot find your function, ensure that the current `local.settings.json` file contains all settings from the `Functions App` >> `Settings` >> `Configuration` in the portal.
+
+
        
        The result may give you a live url in this format, or you can check in Azure portal for these as well:
        

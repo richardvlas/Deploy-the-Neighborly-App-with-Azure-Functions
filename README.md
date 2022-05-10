@@ -261,7 +261,6 @@ We need to set up the Azure resource group, region, storage account, and an app 
 ### III. CI/CD Deployment
 
 >>>>>>>>>>>>>>>
-Create an Azure Registry and dockerize your Azure Functions. Then, push the container to the Azure Container Registry.
 
 Create a Kubernetes cluster, and verify your connection to it with `kubectl get nodes`.
 
@@ -340,6 +339,70 @@ Deploy app to Kubernetes, and check your deployment with `kubectl config get-con
     ```
     
 4. **Create a Kubernetes Cluster**
+    
+    You should have a $containerRegistry ready before creating a Kubernetes cluster using the command below:
+    
+    ```bash
+    # Create an Azure Kubernetes cluster
+    az aks create \
+    --name $AKSCluster \
+    --resource-group $resourceGroup \
+    --node-count 2 \
+    --generate-ssh-keys \
+    --attach-acr $containerRegistry \
+    --location $location
+    ```
+    
+    This should return a JSON object with your AKS deployment information.
+    
+    Now, get your credentials for AKS
+    
+    ```bash
+    # Get credentials for your container service and merge as current context in /Users/<username>/.kube/config
+    az aks get-credentials \
+    --name $AKSCluster \
+    --resource-group $resourceGroup
+    ```
+    
+    Verify the connection to your cluster and view the cluster nodes using:
+    
+    ```bash
+    kubectl get nodes
+    #Example output:
+    #NAME                                STATUS   ROLES   AGE     VERSION
+    #aks-nodepool1-38114521-vmss000000   Ready    agent   3m47s   v1.21.9
+    #aks-nodepool1-38114521-vmss000001   Ready    agent   3m45s   v1.21.9
+    ```
+    
+5. **Deploy the App to Kubernetes**
+   
+   Build the image and deploy the Function to Kubernetes:
+   
+   ```bash
+   func kubernetes deploy --name $functionApp --registry $containerRegistry
+   ```
+   The deploy command will:
+   * Use the Dockerfile to build a local image for the function app.
+   * The local image will be tagged and pushed to the $containerRegistry
+   * Create a deploy.yml manifest file and applied to the cluster that defines a Kubernetes Deployment resource.
+   * Creates a Secrets file containing environment variables imported from your local.settings.json file.
+
+   Check your deployment:
+   
+   ```bash
+   kubectl config get-contexts
+   ```
+
+   
+
+
+    
+    
+
+    
+    
+    
+
     
 
 

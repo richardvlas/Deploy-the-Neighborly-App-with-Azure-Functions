@@ -279,12 +279,10 @@ Deploy app to Kubernetes, and check your deployment with `kubectl config get-con
     Ensure that the auto-generated Dcokerfile contains the `pip install -r requirements.txt` command.
 
 2. **Build the image using the Dockerfile**
-    This step is also called Containerising the App. It needs Docker installed on your local machine. Using the command, you will build and tag an image:
+
+    This step is also called Containerising the App. It needs Docker installed on your local machine. Using the command, you will build and tag an image
     
     ```bash
-    imageName=???
-    imageTag=???
-    
     # SYNTAX 
     # docker build -t <name:tag> <path>
     docker build -t $imageName:$imageTag .
@@ -307,7 +305,43 @@ Deploy app to Kubernetes, and check your deployment with `kubectl config get-con
     
 3. **Create Azure Container Registry Respository and Push the Image**
     
-    After testing, you will want to push the image to a remote repository, such as Dockerhub or Azure Container Registry, so that other services (Azure Kubernetes service) can download your image and run containers out of it.
+    After testing, you will want to push the image to a remote repository, Azure Container Registry, so that Azure Kubernetes service can download your image and run containers out of it.
+    
+    **Azure Container Registry** (ACR) is a managed, private Docker registry service. Think of it as a repository for all of your Docker images.
+
+    Create a Azure Container Registry, and push your image.
+    
+    ```bash
+    # Needs 'az login'
+    # Create a repository in ACR service
+    az acr create --resource-group $resourceGroup --name $containerRegistry --sku Basic
+    az acr login --name $containerRegistry
+    ```
+    
+    In the Azure portal, navigate to the `Container Registry service` >> `Settings` >> `Access Keys` and enable the `Admin user`.
+    
+    Login to your ACR registry from your local terminal:
+    
+    ```bash
+    # Use the Admin user credentials (Username and Password) copied from Container Registry service >> Settings >> Access Keys in the portal
+    docker login $containerRegistry.azurecr.io
+    ```
+    
+    Push the image to Azure Container Registry.
+    
+    ```bash
+    docker push $containerRegistry.azurecr.io/$imageName:$imageTag
+    ```
+    
+    View the newly pushed image in the ACR respository
+    
+    ```bash
+    az acr repository list --name $containerRegistry --output table
+    ```
+    
+4. **Create a Kubernetes Cluster**
+    
+
 
 
 

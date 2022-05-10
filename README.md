@@ -260,13 +260,6 @@ We need to set up the Azure resource group, region, storage account, and an app 
 
 ### III. CI/CD Deployment
 
->>>>>>>>>>>>>>>
-
-Create a Kubernetes cluster, and verify your connection to it with `kubectl get nodes`.
-
-Deploy app to Kubernetes, and check your deployment with `kubectl config get-contexts`.
->>>>>>>>>>>>>>>  
-
 1. **Create a Dockerfile**
     
     A [Dockerfile](https://docs.docker.com/engine/reference/builder/) is a text document that contains all the commands a user could call on the command line to assemble an image. Executing the following command will create a Dockerfile to an existing function project:
@@ -392,6 +385,8 @@ Deploy app to Kubernetes, and check your deployment with `kubectl config get-con
    ```bash
    kubectl config get-contexts
    ```
+   
+   
 
    
 

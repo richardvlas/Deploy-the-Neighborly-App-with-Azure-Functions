@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=storageaccount1379128;AccountKey=RJLL0MKJLiJcqxAwPaCWun24AHr2Hz5+0bMJWCbtUXTQdbXLrjux3+ljM2zgR5FjGlJgEgxEFq2TphAybi3Kkg==",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "FUNCTIONS_EXTENSION_VERSION": "~4",
+    "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=storageaccount1379128;AccountKey=RJLL0MKJLiJcqxAwPaCWun24AHr2Hz5+0bMJWCbtUXTQdbXLrjux3+ljM2zgR5FjGlJgEgxEFq2TphAybi3Kkg==",
+    "WEBSITE_CONTENTSHARE": "functionapp13791286bdfa1aa8a64",
+    "DbConnectionString": "mongodb://cosmosdb1379128:S3ZY8ROyNhk376KlcpmqMdMo5A5sIqVulSex1ylYuLsASFvAjbHtLtVtJp6zYdQ9HeYNWIu1pM9lithoVCMwuA==@cosmosdb1379128.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@cosmosdb1379128@",
+    "EventHubConnectionString": "Endpoint=sb://eventhubrvl1379128.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=JiXgS3zj4GWhDijokNswXruT+vYXkUIEnHk9PV+nr7E=;EntityPath=eventhubrvl"
+  }
+}

@@ -281,6 +281,11 @@ We need to set up the Azure resource group, region, storage account, and an app 
     
     # List all images
     docker images
+    
+    # Tag the image with the same name as the ACR respository else the push will fail.
+    # SYNTAX 
+    # docker tag <name:tag> <ACR-respository>.azurecr.io/<name:tag>
+    docker tag $imageName:$imageTag $containerRegistry.azurecr.io/$imageName:$imageTag
     ```
     
     where,

@@ -397,10 +397,25 @@ We need to set up the Azure resource group, region, storage account, and an app 
    
       1. **SendGrid API Key Set Up**
           
-          * Create a SendGrid Account [here](https://sendgrid.com/). You can use the free service in this exercise, which is enough for our purposes.
+          * Create a SendGrid Account [here](https://sendgrid.com/). You can use the free service, which is enough for our purposes.
+          * Login and generate a SendGrid Key. Your API key is located [here](https://app.sendgrid.com/settings/api_keys). Create an API Key. This will be your key for integration with Azure Logic App, so save this key.
+
+          * Now that you have created your key, make sure you also activate your Sender Authentication with the email. Go to the SendGrid navigation bar, scroll to the bottom and select `Settings` >> `Sender Authentication` list item. Select `Single Verification` option.
+          
+          * Create a new sender email in order to activate your SendGrid. This is because SendGrid would like you to be an actual person, and not a bot, to meet compliance regulations.
+          
+          * Go to your email Inbox and open the SendGrid email verification to complete the sender authentication process.
+
+          Great! Now you have permissions you need to use SendGrid service with its API key for Logic App.
+
+
+
+
+
 
           
-      2. fff
+      2. **Create the Logic App Workflow**
+          TODO
    
    2. Create a namespace for event hub in the portal. You should be able to obtain the namespace URL.
    

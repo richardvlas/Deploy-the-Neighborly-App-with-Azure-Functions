@@ -409,14 +409,30 @@ We need to set up the Azure resource group, region, storage account, and an app 
           Great! Now you have permissions you need to use SendGrid service with its API key for Logic App.
 
 
-
-
-
-
-          
       2. **Create the Logic App Workflow**
-          TODO
-   
+          Next, you'll use the Logic App Designer with an http request trigger.
+          * Login to the [Azure Portal](https://portal.azure.com/).
+          * Go to Resources and create a `Logic App`, then select **Go to resource**
+          * The designer's template page opens to show an introduction video and commonly used triggers.
+          * Select `Blank Logic App` template.
+          * After you select the template, the designer shows an empty workflow.
+          * A workflow always starts with a single trigger, which specifies the condition to meet before running any actions in the workflow. Each time the trigger fires, Azure Logic Apps creates and runs a workflow instance. The request built-in trigger we are going to se creates a manually callable endpoint that can handle only inbound requests over HTTPS. When a caller sends a request to this endpoint, the Request trigger fires and runs the logic app
+          * In the search box, enter `http request` as your filter. From the triggers list, select the `When an HTTP request is received` trigger.
+          * Now, add another action as the next step in your workflow. Under the trigger, select Next step so that you can find the action that you want to add. In our case search for `sendgrid` and select `Send email(V4)` action.
+          * Add a new connection using the API key from earlier and click `Create`.
+          * Fill in the missing to/from and body fields for the email, such as `This is a HTTP trigger test`.
+          * For the subject, write `test from logic app designer`, or whatever subject you would like. You could use a throwaway email or send it to your email account to test.
+          * When you're done, save your logic app. On the designer toolbar, select Save. This step generates the URL to use for sending the request that triggers the logic app. To copy this URL, select the copy icon next to the URL.
+          * To test your logic app, send an HTTP request to the generated URL. For example, you can use a tool such as [Postman](https://www.getpostman.com/) to send the HTTP request. 
+
+
+
+
+
+
+
+
+
    2. Create a namespace for event hub in the portal. You should be able to obtain the namespace URL.
    
    3. Add the connection string of the event hub to the Azure Function.

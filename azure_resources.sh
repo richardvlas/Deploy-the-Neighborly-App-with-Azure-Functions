@@ -10,6 +10,12 @@ mongoDBDatabaseName="mongodb$uniqueId"
 adsCollectionName="advertisements"
 postsCollectionName="posts"
 
+imageName="imagervl$uniqueId"
+imageTag="v1"
+containerRegistry="containerregistryrvl$uniqueId"
+AKSCluster="aksclusterrvl$uniqueId"
+
+
 # Create a resource group
 az group create -n $resourceGroup -l $location
 

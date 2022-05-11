@@ -426,16 +426,52 @@ We need to set up the Azure resource group, region, storage account, and an app 
           * To test your logic app, send an HTTP request to the generated URL. For example, you can use a tool such as [Postman](https://www.getpostman.com/) to send the HTTP request. 
 
 
-
-
-
-
-
-
-
    2. Create a namespace for event hub in the portal. You should be able to obtain the namespace URL.
+      
+      An Event Hubs namespace provides a unique scoping container, in which you create one or more event hubs. 
+      
+      [Create an event hub using Azure portal](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create)
    
    3. Add the connection string of the event hub to the Azure Function.
+
+      The connection string for a namespace has the following components embedded within it,
+
+      - `FQDN` = the FQDN of the Event Hubs namespace you created (it includes the Event Hubs `namespace name` followed by `servicebus.windows.net`)
+         
+      - `SharedAccessKeyName` = the name you chose for your application's SAS keys
+          
+      - `SharedAccessKey` = the generated value of the key.
+      
+      The connection string for a namespace looks like:
+      
+      ```bash
+      Endpoint=sb://<NamespaceName>.servicebus.windows.net/;SharedAccessKeyName=<KeyName>;SharedAccessKey=<KeyValue>
+      ```
+      
+      The connection string for an event hub has an additional component in it. That's, `EntityPath=<EventHubName>`.
+
+      ```bash
+      Endpoint=sb://<NamespaceName>.servicebus.windows.net/;SharedAccessKeyName=<KeyName>;SharedAccessKey=<KeyValue>;EntityPath=<EventHubName>
+      ```
+      
+      
+      Add the connection string to the `local.settings.json` file under `EventHubConnectionString` key and reference it in the `function.json` file of `EventHubTrigger` function
+      
+      ```bash
+      {
+        "scriptFile": "__init__.py",
+        "bindings": [
+          {
+            "type": "eventHubTrigger",
+            "name": "event",
+            "direction": "in",
+            "eventHubName": "eventhubrvl",
+            "connection": "EventHubConnectionString"
+          }
+        ]
+      }
+      ```
+
    
    
 

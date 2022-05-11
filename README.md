@@ -144,7 +144,7 @@ We need to set up the Azure resource group, region, storage account, and an app 
         http://localhost:7071/api/getposts
         ```
     
-    2. Now you can deploy functions to Azure by publishing your function app.
+    2. Now you can deploy functions to Azure by publishing your function app. The command for deploying your function to Function App using CLI is:
         
         ```bash
         # cd into NeighborlyAPI
@@ -159,6 +159,10 @@ We need to set up the Azure resource group, region, storage account, and an app 
         # deploy Azure Functions
         func azure functionapp publish functionapp1379128
         ```
+        
+        If Azure cannot find your function, ensure that the current `local.settings.json` file contains all settings from the `Functions App` >> `Settings` >> `Configuration` in the portal.
+
+
        
        The result may give you a live url in this format, or you can check in Azure portal for these as well:
        
@@ -255,11 +259,197 @@ We need to set up the Azure resource group, region, storage account, and an app 
     ```
 
 ### III. CI/CD Deployment
-Create an Azure Registry and dockerize your Azure Functions. Then, push the container to the Azure Container Registry.
 
-Create a Kubernetes cluster, and verify your connection to it with `kubectl get nodes`.
+1. **Create a Dockerfile**
+    
+    A [Dockerfile](https://docs.docker.com/engine/reference/builder/) is a text document that contains all the commands a user could call on the command line to assemble an image. Executing the following command will create a Dockerfile to an existing function project:
+    
+    ```bash
+    func init --docker-only --python
+    ```
+    
+    Ensure that the auto-generated Dcokerfile contains the `pip install -r requirements.txt` command.
 
-Deploy app to Kubernetes, and check your deployment with `kubectl config get-contexts`.
+2. **Build the image using the Dockerfile**
+
+    This step is also called Containerising the App. It needs Docker installed on your local machine. Using the command, you will build and tag an image
+    
+    ```bash
+    # SYNTAX 
+    # docker build -t <name:tag> <path>
+    docker build -t $imageName:$imageTag .
+    
+    # List all images
+    docker images
+    ```
+    
+    where,
+      * `<name:tag>` is a name and optionally a tag in the 'name:tag' format and
+      * `<path>` refers to the directory containing the Dockerfile.
+
+    Once your image is ready on your local machine, you can test the application.
+    
+    ```bash
+    docker run -p 7071:7071 -it $imageName:$imageTag
+    ```
+    
+    `-p` maps the host's 7071 port to the container's 7071 port.
+    
+3. **Create Azure Container Registry Respository and Push the Image**
+    
+    After testing, you will want to push the image to a remote repository, Azure Container Registry, so that Azure Kubernetes service can download your image and run containers out of it.
+    
+    **Azure Container Registry** (ACR) is a managed, private Docker registry service. Think of it as a repository for all of your Docker images.
+
+    Create a Azure Container Registry, and push your image.
+    
+    ```bash
+    # Needs 'az login'
+    # Create a repository in ACR service
+    az acr create --resource-group $resourceGroup --name $containerRegistry --sku Basic
+    az acr login --name $containerRegistry
+    ```
+    
+    In the Azure portal, navigate to the `Container Registry service` >> `Settings` >> `Access Keys` and enable the `Admin user`.
+    
+    Login to your ACR registry from your local terminal:
+    
+    ```bash
+    # Use the Admin user credentials (Username and Password) copied from Container Registry service >> Settings >> Access Keys in the portal
+    docker login $containerRegistry.azurecr.io
+    ```
+    
+    Push the image to Azure Container Registry.
+    
+    ```bash
+    docker push $containerRegistry.azurecr.io/$imageName:$imageTag
+    ```
+    
+    View the newly pushed image in the ACR respository
+    
+    ```bash
+    az acr repository list --name $containerRegistry --output table
+    ```
+    
+4. **Create a Kubernetes Cluster**
+    
+    You should have a $containerRegistry ready before creating a Kubernetes cluster using the command below:
+    
+    ```bash
+    # Create an Azure Kubernetes cluster
+    az aks create \
+    --name $AKSCluster \
+    --resource-group $resourceGroup \
+    --node-count 2 \
+    --generate-ssh-keys \
+    --attach-acr $containerRegistry \
+    --location $location
+    ```
+    
+    This should return a JSON object with your AKS deployment information.
+    
+    Now, get your credentials for AKS
+    
+    ```bash
+    # Get credentials for your container service and merge as current context in /Users/<username>/.kube/config
+    az aks get-credentials \
+    --name $AKSCluster \
+    --resource-group $resourceGroup
+    ```
+    
+    Verify the connection to your cluster and view the cluster nodes using:
+    
+    ```bash
+    kubectl get nodes
+    #Example output:
+    #NAME                                STATUS   ROLES   AGE     VERSION
+    #aks-nodepool1-38114521-vmss000000   Ready    agent   3m47s   v1.21.9
+    #aks-nodepool1-38114521-vmss000001   Ready    agent   3m45s   v1.21.9
+    ```
+    
+5. **Deploy the App to Kubernetes**
+   
+   Build the image and deploy the Function to Kubernetes:
+   
+   ```bash
+   func kubernetes deploy --name $functionApp --registry $containerRegistry
+   ```
+   The deploy command will:
+   * Use the Dockerfile to build a local image for the function app.
+   * The local image will be tagged and pushed to the $containerRegistry
+   * Create a deploy.yml manifest file and applied to the cluster that defines a Kubernetes Deployment resource.
+   * Creates a Secrets file containing environment variables imported from your local.settings.json file.
+
+   Check your deployment:
+   
+   ```bash
+   kubectl config get-contexts
+   ```
+   
+### IV. Event Hubs and Logic App
+   
+   1. **Create a Logic App** 
+      
+      With Azure Logic Apps and the SendGrid connector, you can automate tasks and workflows that send emails. In this section, you'll utilize SendGrid with the Logic App Designer that watches for an HTTP trigger. When the HTTP request is triggered, you send yourself an email notification.
+      
+      * [Create an integration workflow with Azure Logic Apps on Azure portal](https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-first-logic-app-workflow)
+      * [Create a request trigger in Logic app](https://docs.microsoft.com/en-us/azure/connectors/connectors-native-reqres)
+   
+      1. **SendGrid API Key Set Up**
+          
+          * Create a SendGrid Account [here](https://sendgrid.com/). You can use the free service, which is enough for our purposes.
+          * Login and generate a SendGrid Key. Your API key is located [here](https://app.sendgrid.com/settings/api_keys). Create an API Key. This will be your key for integration with Azure Logic App, so save this key.
+
+          * Now that you have created your key, make sure you also activate your Sender Authentication with the email. Go to the SendGrid navigation bar, scroll to the bottom and select `Settings` >> `Sender Authentication` list item. Select `Single Verification` option.
+          
+          * Create a new sender email in order to activate your SendGrid. This is because SendGrid would like you to be an actual person, and not a bot, to meet compliance regulations.
+          
+          * Go to your email Inbox and open the SendGrid email verification to complete the sender authentication process.
+
+          Great! Now you have permissions you need to use SendGrid service with its API key for Logic App.
+
+
+      2. **Create the Logic App Workflow**
+          Next, you'll use the Logic App Designer with an http request trigger.
+          * Login to the [Azure Portal](https://portal.azure.com/).
+          * Go to Resources and create a `Logic App`, then select **Go to resource**
+          * The designer's template page opens to show an introduction video and commonly used triggers.
+          * Select `Blank Logic App` template.
+          * After you select the template, the designer shows an empty workflow.
+          * A workflow always starts with a single trigger, which specifies the condition to meet before running any actions in the workflow. Each time the trigger fires, Azure Logic Apps creates and runs a workflow instance. The request built-in trigger we are going to se creates a manually callable endpoint that can handle only inbound requests over HTTPS. When a caller sends a request to this endpoint, the Request trigger fires and runs the logic app
+          * In the search box, enter `http request` as your filter. From the triggers list, select the `When an HTTP request is received` trigger.
+          * Now, add another action as the next step in your workflow. Under the trigger, select Next step so that you can find the action that you want to add. In our case search for `sendgrid` and select `Send email(V4)` action.
+          * Add a new connection using the API key from earlier and click `Create`.
+          * Fill in the missing to/from and body fields for the email, such as `This is a HTTP trigger test`.
+          * For the subject, write `test from logic app designer`, or whatever subject you would like. You could use a throwaway email or send it to your email account to test.
+          * When you're done, save your logic app. On the designer toolbar, select Save. This step generates the URL to use for sending the request that triggers the logic app. To copy this URL, select the copy icon next to the URL.
+          * To test your logic app, send an HTTP request to the generated URL. For example, you can use a tool such as [Postman](https://www.getpostman.com/) to send the HTTP request. 
+
+
+
+
+
+
+
+
+
+   2. Create a namespace for event hub in the portal. You should be able to obtain the namespace URL.
+   
+   3. Add the connection string of the event hub to the Azure Function.
+   
+   
+
+   
+
+
+    
+    
+
+    
+    
+    
+
+    
 
 
 

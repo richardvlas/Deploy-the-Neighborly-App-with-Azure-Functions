@@ -386,6 +386,26 @@ We need to set up the Azure resource group, region, storage account, and an app 
    kubectl config get-contexts
    ```
    
+### IV. Event Hubs and Logic App
+   
+   1. **Create a Logic App** 
+      
+      With Azure Logic Apps and the SendGrid connector, you can automate tasks and workflows that send emails. In this section, you'll utilize SendGrid with the Logic App Designer that watches for an HTTP trigger. When the HTTP request is triggered, you send yourself an email notification.
+      
+      * [Create an integration workflow with Azure Logic Apps on Azure portal](https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-first-logic-app-workflow)
+      * [Create a request trigger in Logic app](https://docs.microsoft.com/en-us/azure/connectors/connectors-native-reqres)
+   
+      1. **SendGrid API Key Set Up**
+          
+          * Create a SendGrid Account [here](https://sendgrid.com/). You can use the free service in this exercise, which is enough for our purposes.
+
+          
+      2. fff
+   
+   2. Create a namespace for event hub in the portal. You should be able to obtain the namespace URL.
+   
+   3. Add the connection string of the event hub to the Azure Function.
+   
    
 
    

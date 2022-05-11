@@ -472,7 +472,13 @@ We need to set up the Azure resource group, region, storage account, and an app 
       }
       ```
 
-   
+### V. Cleaning Up Your Services
+
+Clean up and remove all services, or else you will incur charges.
+
+```bash
+az group delete --name $resourceGroup
+```
    
 
    
